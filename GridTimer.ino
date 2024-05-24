@@ -13,8 +13,8 @@
 #define SCLK   0x20
 
 // Connections to MAX7219 via SPI port on AVR chip
-// I'm actually using a ready-made MAX7219 board and red LED
-// matrix display, Deal Extreme (dx.com) SKU #184854
+// I'm actually using four ready-made MAX7219 boards and red LED
+// matrix displays, Deal Extreme (dx.com) SKU #184854
 #define slaveSelectPin 10  // CS pin
 #define SDAPin 11          // DIN pin
 #define SCLKPin 13         // CLK pin
@@ -31,14 +31,10 @@
 // Size of LED matrix
 #define MAXX 16
 #define MAXY 16
-#define MAXROWS 16
 
 
 // The pixel buffer, 32 bytes
-unsigned short FrameBuffer[MAXY];
-
-
-int Brightness = 7; // LED matrix display brightness
+unsigned short int FrameBuffer[MAXY];
 
 
 void setup(void)
@@ -64,28 +60,27 @@ void setup(void)
 void loop(void)
 {
   int x, y;
-  int i, j, tmp;
-  int buf[16];
+  int buf[MAXX];
 
   clrFrame();
 
-  for (y = 0; y < 16; y++) {
-    for (x = 0; x < 16; x++) {
+  for (y = 0; y < MAXY; y++) {
+    for (x = 0; x < MAXX; x++) {
       buf[x] = x;
     }
 
-    for (x = 0; x < 16; x++) {
-      i = random(16);
-      j = random(16);
+    for (x = 0; x < MAXX; x++) {
+      const int i = random(MAXX);
+      const int j = random(MAXX);
 
       if (i != j) {
-        tmp = buf[i];
+        const int tmp = buf[i];
         buf[i] = buf[j];
         buf[j] = tmp;
       }
     }
 
-    for (x = 0; x < 16; x++) {
+    for (x = 0; x < MAXX; x++) {
       setPixel(buf[x], y);
   
       updscreen();
