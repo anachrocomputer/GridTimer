@@ -38,30 +38,6 @@
 unsigned short FrameBuffer[MAXY];
 
 
-#define A (1 << 0)
-#define B (1 << 1)
-#define C (1 << 2)
-#define D (1 << 3)
-#define E (1 << 4)
-#define F (1 << 5)
-#define G (1 << 6)
-#define DP (1 << 7)
-
-// Table of seven-segment digits 0-9
-unsigned char Segtab[10] = {
-  A | B | C | D | E | F,     // 0
-  D | E,                     // 1
-  A | C | D | F | G,         // 2
-  C | D | E | F | G,         // 3
-  B | D | E | G,             // 4
-  B | C | E | F | G,         // 5
-  A | B | C | E | F | G,     // 6
-  C | D | E,                 // 7
-  A | B | C | D | E | F | G, // 8
-  B | C | D | E | F | G      // 9
-};
-
-
 int Brightness = 7; // LED matrix display brightness
 
 
@@ -125,90 +101,6 @@ void loop(void)
 void clrFrame(void)
 {
   memset(FrameBuffer, 0, sizeof (FrameBuffer));
-}
-
-
-/* setVline --- draw vertical line */
-
-void setVline(const unsigned int x, const unsigned int y1, const unsigned int y2)
-{
-  unsigned int y;
-  
-  for (y = y1; y <= y2; y++)
-    setPixel(x, y);
-}
-
-
-/* clrVline --- draw vertical line */
-
-void clrVline(const unsigned int x, const unsigned int y1, const unsigned int y2)
-{
-  unsigned int y;
-  
-  for (y = y1; y <= y2; y++)
-    clrPixel(x, y);
-}
-
-
-/* setHline --- set pixels in a horizontal line */
-
-void setHline(const unsigned int x1, const unsigned int x2, const unsigned int y)
-{
-  unsigned int x;
-  
-  for (x = x1; x <= x2; x++)
-    setPixel(x, y);
-}
-
-
-/* clrHline --- clear pixels in a horizontal line */
-
-void clrHline(const unsigned int x1, const unsigned int x2, const unsigned int y)
-{
-  unsigned int x;
-
-  if (y < MAXY) {
-    for (x = x1; x <= x2; x++)
-      clrPixel(x, y);
-  }
-}
-
-
-/* setRect --- set pixels in a (non-filled) rectangle */
-
-void setRect(const int x1, const int y1, const int x2, const int y2)
-{
-  setHline(x1, x2, y1);
-  setVline(x2, y1, y2);
-  setHline(x1, x2, y2);
-  setVline(x1, y1, y2);
-}
-
-
-/* fillRect --- set pixels in a filled rectangle */
-
-void fillRect(const int x1, const int y1, const int x2, const int y2, const int ec, const int fc)
-{
-  int y;
-  
-  for (y = y1; y <= y2; y++)
-    if (fc == 0)
-      clrHline(x1, x2, y);
-    else if (fc == 1)
-      setHline(x1, x2, y);
-  
-  if (ec == 1) {
-    setHline(x1, x2, y1);
-    setVline(x2, y1, y2);
-    setHline(x1, x2, y2);
-    setVline(x1, y1, y2);
-  }
-  else if (ec == 0) {
-    clrHline(x1, x2, y1);
-    clrVline(x2, y1, y2);
-    clrHline(x1, x2, y2);
-    clrVline(x1, y1, y2);
-  }
 }
 
 
@@ -310,4 +202,3 @@ void max7219write(const unsigned char reg, const unsigned short val)
   SPI.transfer(val & 0xff);
   LEDOUT |= CS;     //  digitalWrite(slaveSelectPin, HIGH);
 }
-
